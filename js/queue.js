@@ -124,7 +124,7 @@ async function renderIframe(src){
     iframe.height = '315';
     iframe.src = src;
     iframe.title = 'YouTube video player';
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share';
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
     iframe.allowFullscreen = true;
     iframe.addEventListener('load', () => shell.classList.remove('loading'));
@@ -192,7 +192,8 @@ export function updateQueueUI(){
     });
     queueList.appendChild(li);
   });
-  navControls.hidden = state.queue.length < 2;
+  // Show controls (including Cast/Fullscreen) as soon as at least one video exists
+  navControls.hidden = state.queue.length === 0;
   const qc = document.getElementById('queueCount');
   if(qc){
     const prev = qc.textContent.trim();

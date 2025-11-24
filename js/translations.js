@@ -40,7 +40,12 @@ const dictionaries = {
     playlist_delete_confirm_text: 'Плейлист будет удалён. Saved не изменится.',
     playlist_delete_confirm_ok: 'Удалить',
     playlist_delete_confirm_cancel: 'Отмена',
-    import_playlist_play: 'Импорт и смотреть'
+    import_playlist_play: 'Импорт и смотреть',
+    fullscreen: 'На весь экран',
+    cast: 'Cast',
+    cast_no_devices: 'Нет устройств',
+    cast_connecting: 'Подключение...',
+    cast_connected: 'Подключено'
   },
   en: {
     heading: 'Video Queue Player',
@@ -82,7 +87,12 @@ const dictionaries = {
     playlist_delete_confirm_text: 'This will remove the playlist. Saved videos remain.',
     playlist_delete_confirm_ok: 'Delete',
     playlist_delete_confirm_cancel: 'Cancel',
-    import_playlist_play: 'Import & Play'
+    import_playlist_play: 'Import & Play',
+    fullscreen: 'Fullscreen',
+    cast: 'Cast',
+    cast_no_devices: 'No devices',
+    cast_connecting: 'Connecting...',
+    cast_connected: 'Connected'
   },
   es: {
     heading: 'Video Queue Player',
@@ -124,7 +134,12 @@ const dictionaries = {
     playlist_delete_confirm_text: 'La lista se eliminará. Guardado no cambia.',
     playlist_delete_confirm_ok: 'Eliminar',
     playlist_delete_confirm_cancel: 'Cancelar',
-    import_playlist_play: 'Importar y reproducir'
+    import_playlist_play: 'Importar y reproducir',
+    fullscreen: 'Pantalla completa',
+    cast: 'Cast',
+    cast_no_devices: 'Sin dispositivos',
+    cast_connecting: 'Conectando...',
+    cast_connected: 'Conectado'
   },
   de: {
     heading: 'Video Queue Player',
@@ -166,7 +181,12 @@ const dictionaries = {
     playlist_delete_confirm_text: 'Playlist wird entfernt. Gespeichert bleibt.',
     playlist_delete_confirm_ok: 'Löschen',
     playlist_delete_confirm_cancel: 'Abbrechen',
-    import_playlist_play: 'Importieren & Abspielen'
+    import_playlist_play: 'Importieren & Abspielen',
+    fullscreen: 'Vollbild',
+    cast: 'Cast',
+    cast_no_devices: 'Keine Geräte',
+    cast_connecting: 'Verbinden...',
+    cast_connected: 'Verbunden'
   },
   fr: {
     heading: 'Video Queue Player',
@@ -208,7 +228,12 @@ const dictionaries = {
     playlist_delete_confirm_text: 'La playlist sera supprimée. Sauvegardé reste inchangé.',
     playlist_delete_confirm_ok: 'Supprimer',
     playlist_delete_confirm_cancel: 'Annuler',
-    import_playlist_play: 'Importer & Lire'
+    import_playlist_play: 'Importer & Lire',
+    fullscreen: 'Plein écran',
+    cast: 'Cast',
+    cast_no_devices: 'Aucun appareil',
+    cast_connecting: 'Connexion...',
+    cast_connected: 'Connecté'
   }
 };
 

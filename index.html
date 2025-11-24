@@ -6,6 +6,8 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="googlebot" content="noindex, nofollow" />
   <title>Video Queue Player</title>
+  <!-- Google Cast sender SDK -->
+  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
   <link rel="icon" type="image/svg+xml" href="img/favicon.png" />
   <link rel="alternate icon" type="image/png" href="img/logo100.png" />
   <link rel="stylesheet" href="css/base.css" />
@@ -49,6 +51,10 @@
       <div class="result-wrap" id="result" hidden>
         <div class="iframe-shell loading" id="iframeShell" aria-label="Video container"></div>
         <div class="nav-controls" id="navControls" hidden>
+          <div class="cast-wrap">
+            <google-cast-launcher id="castBtn" class="cast-btn" aria-label="Cast" data-i18n="cast"></google-cast-launcher>
+            <span id="castStatus" class="cast-status" aria-live="polite"></span>
+          </div>
           <button type="button" id="prevBtn" class="secondary" aria-label="Previous" data-i18n="previous">⟨ Previous</button>
           <button type="button" id="nextBtn" class="secondary" aria-label="Next" data-i18n="next">Next ⟩</button>
         </div>
@@ -99,5 +105,6 @@
 
   <button type="button" id="openQueueBtn" class="open-queue-btn" aria-label="Open queue">Queue <span id="queueCount" class="queue-count">0</span></button>
   <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/cast.js"></script>
 </body>
 </html>
