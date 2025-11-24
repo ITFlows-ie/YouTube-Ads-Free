@@ -1,6 +1,7 @@
 import { addToQueue, watchNow, next, prev, initQueue, updateQueueUI, state, clearAllQueue, reorderQueue, playIndex } from './queue.js';
 import { setLang, getLang, applyTranslations, t } from './translations.js';
 import { extractId, extractPlaylistId } from './utils.js';
+import { fetchPlaylistFeed } from './playlist_fetch.js';
 import { playlistStore } from './playlists.js';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -223,10 +224,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const pid = extractPlaylistId(raw);
     if(pid){
       setError(t('playlist_loading'));
-      fetch(`playlist_feed.php?id=${encodeURIComponent(pid)}`)
-        .then(resp => { if(!resp.ok) throw new Error('fetch'); return resp.json(); })
+      fetchPlaylistFeed(pid)
         .then(data => {
-          if(!data || !Array.isArray(data.ids) || !data.ids.length){ setError(t('playlist_fetch_error')); return; }
+          if(!data.ids.length){ setError(t('playlist_empty')); return; }
           pendingPlaylistData = { pid, ids: data.ids, title: (data.title || pid) };
           if(playlistModalCount){ playlistModalCount.textContent = t('playlist_confirm_count').replace('{n}', String(data.ids.length)); }
           openPlaylistModal();
@@ -262,14 +262,10 @@ window.addEventListener('DOMContentLoaded', () => {
     if(pid){
       setError(t('playlist_loading'));
       try {
-        const resp = await fetch(`playlist_feed.php?id=${encodeURIComponent(pid)}`);
-        if(!resp.ok){ setError(t('playlist_fetch_error')); return; }
-        const data = await resp.json();
-        if(!data || !Array.isArray(data.ids)){ setError(t('playlist_fetch_error')); return; }
+        const data = await fetchPlaylistFeed(pid);
         if(!data.ids.length){ setError(t('playlist_empty')); return; }
         pendingPlaylistData = { pid, ids: data.ids, title: (data.title || pid) };
         if(playlistModalCount){ playlistModalCount.textContent = t('playlist_confirm_count').replace('{n}', String(data.ids.length)); }
-        // Show modal and remove loading message
         openPlaylistModal();
         clearError();
         return;
