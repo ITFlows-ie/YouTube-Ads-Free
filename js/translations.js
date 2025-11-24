@@ -1,7 +1,7 @@
 // Simple i18n system
 const dictionaries = {
   ru: {
-    heading: 'Video Queue Player',
+    heading: 'YouTube Video Player',
     subtitle: 'Вставьте ссылку на видео или плейлист. Смотрите сразу, сохраняйте одиночные видео в Saved, импортируйте плейлист отдельно.',
     watch_now: 'Смотреть',
     add_to_queue: 'В очередь', // legacy
@@ -48,7 +48,7 @@ const dictionaries = {
     cast_connected: 'Подключено'
   },
   en: {
-    heading: 'Video Queue Player',
+    heading: 'YouTube Video Player',
     subtitle: 'Paste a YouTube video or playlist URL. Watch instantly, save single videos to Saved, or import & play whole playlists.',
     watch_now: 'Watch',
     add_to_queue: 'Queue', // legacy
@@ -95,7 +95,7 @@ const dictionaries = {
     cast_connected: 'Connected'
   },
   es: {
-    heading: 'Video Queue Player',
+    heading: 'YouTube Video Player',
     subtitle: 'Pega un enlace de YouTube. Puedes ver o añadir a la cola.',
     watch_now: 'Ver',
     add_to_queue: 'A la cola', // legacy
@@ -142,7 +142,7 @@ const dictionaries = {
     cast_connected: 'Conectado'
   },
   de: {
-    heading: 'Video Queue Player',
+    heading: 'YouTube Video Player',
     subtitle: 'Füge einen YouTube-Link ein. Du kannst ansehen oder rechts zur Warteschlange hinzufügen.',
     watch_now: 'Ansehen',
     add_to_queue: 'Zur Warteschlange', // legacy
@@ -189,7 +189,7 @@ const dictionaries = {
     cast_connected: 'Verbunden'
   },
   fr: {
-    heading: 'Video Queue Player',
+    heading: 'YouTube Video Player',
     subtitle: 'Collez un lien YouTube. Vous pouvez regarder ou ajouter à la file à droite.',
     watch_now: 'Regarder',
     add_to_queue: 'En file', // legacy
