@@ -23,6 +23,22 @@ export function extractId(raw){
   return null;
 }
 
+// Extract playlist id from a URL or raw id.
+// Basic support: look for 'list=' query param or accept plausible playlist id patterns.
+export function extractPlaylistId(raw){
+  if(!raw) return null;
+  try { raw = raw.trim(); } catch(e) {}
+  // Direct id heuristic (YouTube playlist ids often start with PL, UU, LL, OL, RD)
+  const directPattern = /^(PL|UU|LL|OL|RD)[A-Za-z0-9_-]{10,}$/i;
+  if(directPattern.test(raw)) return raw;
+  if(!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+  let u;
+  try { u = new URL(raw); } catch(e) { return null; }
+  const listParam = u.searchParams.get('list');
+  if(listParam && directPattern.test(listParam)) return listParam;
+  return null;
+}
+
 export function buildEmbed(id){
   const base = 'https://www.youtube.com/embed/' + encodeURIComponent(id);
   const params = new URLSearchParams({ rel: '0', modestbranding: '1' });

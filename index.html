@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover" />
-  <title>YouTube Ads Free Player</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noindex, nofollow" />
+  <title>Video Queue Player</title>
   <link rel="icon" type="image/svg+xml" href="img/favicon.png" />
   <link rel="alternate icon" type="image/png" href="img/logo100.png" />
   <link rel="stylesheet" href="css/base.css" />
@@ -15,13 +17,13 @@
   <div class="app-layout">
     <div class="card main-panel">
       <div class="top-bar">
-        <div class="brand" aria-label="IT Flows бренд">
-          <img src="img/logo100.png" alt="IT Flows логотип" class="brand-logo" loading="lazy" decoding="async" />
+        <div class="brand" aria-label="IT Flows brand">
+          <img src="img/logo100.png" alt="IT Flows logo" class="brand-logo" loading="lazy" decoding="async" />
           <span class="brand-name">IT Flows</span>
         </div>
         <div class="lang-switch">
           <label for="langSelect" class="visually-hidden">Language</label>
-          <select id="langSelect" aria-label="Выбор языка">
+          <select id="langSelect" aria-label="Language selection">
             <option value="ru">Русский</option>
             <option value="en">English</option>
             <option value="es">Español</option>
@@ -30,52 +32,72 @@
           </select>
         </div>
       </div>
-      <h1 data-i18n="heading">YouTube Ads Free Player</h1>
-      <p class="subtitle" data-i18n="subtitle">Вставьте ссылку на видео. Можно просто смотреть или добавлять в очередь справа.</p>
+      <h1 data-i18n="heading">YouTube Video Player</h1>
+      <p class="subtitle" data-i18n="subtitle">Paste a YouTube video or playlist URL. Watch instantly, save single videos to Saved, or import & play whole playlists.</p>
       <form id="ytForm" autocomplete="off" novalidate>
         <div class="input-row">
           <div class="input-wrapper empty">
             <input id="ytUrl" name="ytUrl" type="url" inputmode="url" spellcheck="false" placeholder="https://www.youtube.com/watch?v=..." required />
             <button type="button" id="inputClearBtn" class="input-clear-btn" aria-label="Очистить поле">&times;</button>
           </div>
-          <button type="button" id="watchBtn" aria-label="Смотреть сейчас" data-i18n="watch_now">Смотреть</button>
-          <button type="button" id="queueBtn" class="secondary" aria-label="Добавить в очередь" data-i18n="add_to_queue">В очередь</button>
+          <button type="button" id="watchBtn" aria-label="Watch now" data-i18n="watch_now">Watch</button>
+          <button type="button" id="queueBtn" class="secondary" aria-label="Save video" data-i18n="save_video">Save</button>
         </div>
         <div class="error" id="errorMsg"></div>
       </form>
+      <!-- Active playlist moved to sidebar select -->
       <div class="result-wrap" id="result" hidden>
-        <div class="iframe-shell loading" id="iframeShell" aria-label="Видео контейнер"></div>
+        <div class="iframe-shell loading" id="iframeShell" aria-label="Video container"></div>
         <div class="nav-controls" id="navControls" hidden>
-          <button type="button" id="prevBtn" class="secondary" aria-label="Предыдущее" data-i18n="previous">⟨ Предыдущее</button>
-          <button type="button" id="nextBtn" class="secondary" aria-label="Следующее" data-i18n="next">Следующее ⟩</button>
+          <button type="button" id="prevBtn" class="secondary" aria-label="Previous" data-i18n="previous">⟨ Previous</button>
+          <button type="button" id="nextBtn" class="secondary" aria-label="Next" data-i18n="next">Next ⟩</button>
         </div>
       </div>
     </div>
-    <aside class="card queue-panel" aria-label="Очередь видео">
+    <aside class="card queue-panel" aria-label="Queue and playlists">
+      <div class="playlist-select" id="playlistSelect" aria-label="Playlist selector">
+        <button type="button" class="ps-trigger" id="playlistSelectTrigger" aria-haspopup="listbox" aria-expanded="false">
+          <span class="ps-current" id="playlistCurrent">Saved</span>
+          <span class="ps-caret" aria-hidden="true">▾</span>
+        </button>
+        <ul class="ps-options" id="playlistOptions" role="listbox" hidden></ul>
+      </div>
       <div class="queue-header">
-        <h2 class="queue-title" data-i18n="queue_title">Очередь</h2>
-        <button type="button" id="clearAllBtn" class="secondary small" aria-label="Очистить очередь" data-i18n="clear_queue">Очистить</button>
+        <h2 class="queue-title" data-i18n="queue_title">Queue</h2>
       </div>
       <ul id="queueList" class="queue-list" aria-live="polite"></ul>
-      <div class="queue-empty" id="queueEmpty" data-i18n="queue_empty">Очередь пуста. Добавьте видео.</div>
+      <div class="queue-empty" id="queueEmpty" data-i18n="queue_empty">Queue is empty. Add videos.</div>
     </aside>
     <div class="queue-overlay" id="queueOverlay" hidden></div>
   </div>
-  <!-- Modal подтверждения очистки -->
-  <div class="modal-backdrop" id="modalBackdrop" hidden>
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button type="button" class="close-btn" id="closeModalBtn" aria-label="Закрыть">✕</button>
-      <h3 id="modalTitle" data-i18n="modal_title">Очистить всю очередь?</h3>
-      <p class="modal-text" data-i18n="modal_text">Это удалит все видео из списка. Действие нельзя отменить.</p>
+  <!-- Playlist delete confirmation modal -->
+  <div class="modal-backdrop" id="playlistDeleteModalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="playlistDeleteModalTitle">
+      <button type="button" class="close-btn" id="playlistDeleteCloseBtn" aria-label="Close">✕</button>
+      <h3 id="playlistDeleteModalTitle" data-i18n="playlist_delete_confirm_title">Delete playlist?</h3>
+      <p class="modal-text" id="playlistDeleteModalText" data-i18n="playlist_delete_confirm_text">This will remove the playlist. Saved videos stay untouched.</p>
       <div class="modal-actions">
-        <button type="button" id="confirmClearBtn" class="danger" data-i18n="modal_confirm">Очистить</button>
-        <button type="button" id="cancelClearBtn" class="secondary" data-i18n="modal_cancel">Отмена</button>
+        <button type="button" id="playlistDeleteConfirmOk" class="danger" data-i18n="playlist_delete_confirm_ok">Delete</button>
+        <button type="button" id="playlistDeleteConfirmCancel" class="secondary" data-i18n="playlist_delete_confirm_cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <!-- Playlist import confirmation modal -->
+  <div class="modal-backdrop" id="playlistModalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="playlistModalTitle">
+      <button type="button" class="close-btn" id="playlistCloseBtn" aria-label="Close">✕</button>
+      <h3 id="playlistModalTitle" data-i18n="playlist_confirm_title">Import playlist?</h3>
+      <p class="modal-text" id="playlistModalText" data-i18n="playlist_confirm_text">A separate playlist will be created. Videos stay out of Saved.</p>
+      <p class="modal-count" id="playlistModalCount" data-i18n="playlist_confirm_count">Videos in playlist: 0</p>
+      <div class="modal-actions">
+        <button type="button" id="playlistConfirmOk" class="danger" data-i18n="playlist_confirm_ok">Import</button>
+        <button type="button" id="playlistConfirmCancel" class="secondary" data-i18n="playlist_confirm_cancel">Cancel</button>
       </div>
     </div>
   </div>
   <footer>© 2025 IT Flows • <a href="https://github.com/ITFlows-ie" target="_blank" rel="noopener noreferrer">GitHub</a></footer>
 
-  <button type="button" id="openQueueBtn" class="open-queue-btn" aria-label="Открыть очередь">Очередь <span id="queueCount" class="queue-count">0</span></button>
+  <button type="button" id="openQueueBtn" class="open-queue-btn" aria-label="Open queue">Queue <span id="queueCount" class="queue-count">0</span></button>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
