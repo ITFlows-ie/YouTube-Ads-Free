@@ -1,6 +1,7 @@
 import { buildEmbed, fetchMeta, extractId, escapeHtml } from './utils.js';
 import { playVideo, getSavedProgress } from './player.js';
 import { t } from './translations.js';
+import { playlistStore } from './playlists.js';
 
 export const state = {
   queue: [], // {id, original, loading, meta}
@@ -54,6 +55,8 @@ export function playIndex(idx){
   renderIframe(embedSrc);
   updateQueueUI();
   saveQueue();
+  // Notify cast subsystem about video change
+  try { window.dispatchEvent(new CustomEvent('videoChange', { detail: { videoId: id } })); } catch {}
 }
 
 export function watchNow(raw){
@@ -63,6 +66,7 @@ export function watchNow(raw){
   state.refs.resultWrap.hidden = false;
   state.refs.iframeShell.classList.add('loading');
   renderIframe(buildEmbed(id));
+  try { window.dispatchEvent(new CustomEvent('videoChange', { detail: { videoId: id } })); } catch {}
 }
 
 export function next(){
@@ -172,7 +176,52 @@ export function updateQueueUI(){
     });
     li.querySelector('.del-btn').addEventListener('click', e => {
       e.stopPropagation();
-      removeIndex(idx);
+      if(playlistStore.queueView.activePlaylistId === 'saved'){
+        const removed = state.queue[idx];
+        const wasActive = idx === state.currentIndex;
+        const originalIndex = idx;
+        const vid = removed?.id;
+        if(!vid) return;
+        // Perform removal
+        playlistStore.removeFromSaved(vid);
+        const currentId = state.queue[state.currentIndex]?.id;
+        state.queue = playlistStore.saved.videos.map(v => ({id: v.id, original: v.original, loading: false, meta: null}));
+        if(state.queue.length === 0){
+          state.currentIndex = -1;
+        } else if(currentId && state.queue.some(q => q.id === currentId)){
+          state.currentIndex = state.queue.findIndex(q => q.id === currentId);
+        } else {
+          state.currentIndex = Math.min(state.currentIndex, state.queue.length - 1);
+        }
+        state.queue.forEach(item => {
+          if(!item.meta){
+            item.loading = true;
+            fetchMeta(item.id).then(meta => { item.loading = false; item.meta = meta; updateQueueUI(); });
+          }
+        });
+        updateQueueUI();
+        saveQueue();
+        // Show undo snackbar
+        showUndoSnackbar(t('video_deleted'), () => {
+          // Restore video in saved list
+          const insertAt = Math.min(originalIndex, playlistStore.saved.videos.length);
+          playlistStore.saved.videos.splice(insertAt,0,{ id: removed.id, original: removed.original });
+          playlistStore.persist();
+          // Rebuild queue from saved
+          const prevPlayingId = wasActive ? removed.id : (state.queue[state.currentIndex]?.id);
+          state.queue = playlistStore.saved.videos.map(v => ({id: v.id, original: v.original, loading: false, meta: null}));
+          if(prevPlayingId){
+            const newIdx = state.queue.findIndex(q => q.id === prevPlayingId);
+            state.currentIndex = newIdx !== -1 ? newIdx : 0;
+          } else if(state.queue.length){
+            state.currentIndex = 0;
+          }
+          updateQueueUI();
+          saveQueue();
+        });
+      } else {
+        removeIndex(idx);
+      }
     });
     // Drag events
     li.addEventListener('dragstart', e => {
@@ -234,4 +283,37 @@ export function clearAllQueue(){
   updateQueueUI();
   try { localStorage.removeItem(state.storageKey); } catch(e){}
   if(state.refs.resultWrap){ state.refs.resultWrap.hidden = true; }
+}
+
+// Snackbar (Undo for Saved deletions)
+let snackbarTimer = null;
+function showUndoSnackbar(message, undoCb, timeoutMs = 6000){
+  const el = document.getElementById('snackbar');
+  if(!el) return;
+  if(snackbarTimer){ clearTimeout(snackbarTimer); snackbarTimer = null; }
+  el.innerHTML = '';
+  const msgSpan = document.createElement('span');
+  msgSpan.className = 'msg';
+  msgSpan.textContent = message;
+  const undoBtn = document.createElement('button');
+  undoBtn.type = 'button';
+  undoBtn.className = 'undo-btn';
+  undoBtn.textContent = t('undo');
+  undoBtn.addEventListener('click', () => {
+    if(snackbarTimer){ clearTimeout(snackbarTimer); snackbarTimer = null; }
+    hideSnackbar();
+    try { undoCb && undoCb(); } catch {}
+  });
+  const bar = document.createElement('div');
+  bar.className = 'bar';
+  bar.style.animationDuration = timeoutMs + 'ms';
+  el.appendChild(msgSpan);
+  el.appendChild(undoBtn);
+  el.appendChild(bar);
+  el.classList.add('show');
+  snackbarTimer = setTimeout(()=>{ hideSnackbar(); }, timeoutMs);
+}
+function hideSnackbar(){
+  const el = document.getElementById('snackbar');
+  if(el){ el.classList.remove('show'); }
 }

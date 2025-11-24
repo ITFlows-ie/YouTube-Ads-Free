@@ -88,6 +88,16 @@ export const playlistStore = {
     }
     this.persist();
   }
+  ,removeFromSaved(id){
+    if(!id) return;
+    const idx = this.saved.videos.findIndex(v => v.id === id);
+    if(idx === -1) return;
+    this.saved.videos.splice(idx,1);
+    if(this.queueView.activePlaylistId === 'saved'){
+      this.rebuildQueueView();
+    }
+    this.persist();
+  }
 };
 
 // Initialize queueView items on load

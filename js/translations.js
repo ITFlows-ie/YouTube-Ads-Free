@@ -46,6 +46,10 @@ const dictionaries = {
     cast_no_devices: 'Нет устройств',
     cast_connecting: 'Подключение...',
     cast_connected: 'Подключено'
+    ,video_deleted: 'Видео удалено'
+    ,undo: 'Вернуть'
+    ,cast_send_error: 'Ошибка отправки'
+    ,cast_retrying: 'Повтор...'
   },
   en: {
     heading: 'YouTube Video Player',
@@ -93,6 +97,10 @@ const dictionaries = {
     cast_no_devices: 'No devices',
     cast_connecting: 'Connecting...',
     cast_connected: 'Connected'
+    ,video_deleted: 'Video removed'
+    ,undo: 'Undo'
+    ,cast_send_error: 'Cast error'
+    ,cast_retrying: 'Retrying...'
   },
   es: {
     heading: 'YouTube Video Player',
@@ -140,6 +148,10 @@ const dictionaries = {
     cast_no_devices: 'Sin dispositivos',
     cast_connecting: 'Conectando...',
     cast_connected: 'Conectado'
+    ,video_deleted: 'Vídeo eliminado'
+    ,undo: 'Deshacer'
+    ,cast_send_error: 'Error de Cast'
+    ,cast_retrying: 'Reintentando...'
   },
   de: {
     heading: 'YouTube Video Player',
@@ -187,6 +199,10 @@ const dictionaries = {
     cast_no_devices: 'Keine Geräte',
     cast_connecting: 'Verbinden...',
     cast_connected: 'Verbunden'
+    ,video_deleted: 'Video entfernt'
+    ,undo: 'Rückgängig'
+    ,cast_send_error: 'Cast Fehler'
+    ,cast_retrying: 'Erneuter Versuch...'
   },
   fr: {
     heading: 'YouTube Video Player',
@@ -234,6 +250,10 @@ const dictionaries = {
     cast_no_devices: 'Aucun appareil',
     cast_connecting: 'Connexion...',
     cast_connected: 'Connecté'
+    ,video_deleted: 'Vidéo supprimée'
+    ,undo: 'Annuler'
+    ,cast_send_error: 'Erreur Cast'
+    ,cast_retrying: 'Nouvelle tentative...'
   }
 };
 

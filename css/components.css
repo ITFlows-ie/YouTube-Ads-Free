@@ -111,3 +111,13 @@ footer a:focus { outline:2px solid var(--accent); outline-offset:2px; border-rad
 .ps-option button:hover { background:hsl(230 12% 26%); }
 .ps-option button.delete { border-color:#703; color:#f88; }
 .ps-option button.delete:hover { background:rgba(112,3,32,.65); }
+
+/* Snackbar for undo (Saved video deletion) */
+.snackbar { position:fixed; left:50%; transform:translateX(-50%); bottom:1rem; background:hsl(230 15% 10%); border:1px solid hsl(230 12% 28%); padding:.65rem .9rem; border-radius:.7rem; color:var(--text); font-size:.65rem; letter-spacing:.04em; display:none; align-items:center; gap:.9rem; z-index:4000; box-shadow:0 .5rem 1.4rem -.4rem rgba(0,0,0,.55); max-width:calc(100% - 2rem); }
+.snackbar.show { display:flex; animation:snackFade .25s ease; }
+@keyframes snackFade { from { opacity:0; transform:translate(-50%, 10px); } to { opacity:1; transform:translate(-50%,0); } }
+.snackbar .msg { flex:1 1 auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.snackbar button.undo-btn { background:hsl(227 80% 57%); color:#fff; border:none; padding:.4rem .75rem; font-size:.6rem; font-weight:600; border-radius:.5rem; cursor:pointer; letter-spacing:.05em; }
+.snackbar button.undo-btn:hover { background:hsl(227 82% 63%); }
+.snackbar .bar { position:absolute; left:0; bottom:0; height:3px; background:var(--accent); width:100%; animation:snackBar linear forwards; }
+@keyframes snackBar { from { width:100%; } to { width:0%; } }

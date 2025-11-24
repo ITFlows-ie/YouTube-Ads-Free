@@ -73,12 +73,15 @@ export async function playVideo(videoId, container){
         if(resumeAt >= RESUME_THRESHOLD && dur && resumeAt < dur - 10){
           try { evt.target.seekTo(resumeAt, true); } catch(e){}
         }
+        // Notify cast of ready state with potential resume time
+        try { window.dispatchEvent(new CustomEvent('videoReady', { detail: { videoId, currentTime: resumeAt } })); } catch {}
       },
       onStateChange: evt => {
         const state = evt.data;
         // Ended: reset progress
         if(state === window.YT.PlayerState.ENDED){
           clearVideoProgress(videoId);
+          try { window.dispatchEvent(new CustomEvent('videoEnded', { detail: { videoId } })); } catch {}
         }
       }
     }
@@ -90,6 +93,8 @@ export async function playVideo(videoId, container){
     const t = currentPlayer.getCurrentTime();
     if(isFinite(t) && t > 0){
       saveVideoProgress(videoId, t);
+      // Throttled progress event for cast sync (every SAVE_INTERVAL)
+      try { window.dispatchEvent(new CustomEvent('videoProgress', { detail: { videoId, currentTime: Math.floor(t) } })); } catch {}
     }
   }, SAVE_INTERVAL);
 
